@@ -1,0 +1,33 @@
+Yahoo! KeyKey（原生 arm64 重建版）
+================================
+
+本軟體改編自 Yahoo! Inc. 於 2012 年以「new BSD 3-clause」開放原始碼的
+「Yahoo! KeyKey」專案（原專案 KeyKey / OpenVanilla），並由
+bency/YahooKeyKey 分支原始碼重新編譯，供 Apple Silicon 原生執行。
+
+主要授權（BSD 3-clause）：見同目錄 LICENSE。
+
+第三方元件與資料（依 ACKNOWLEDGEMENTS 與各原始檔頭宣告）：
+- OpenVanilla (c) 2004-2008 The OpenVanilla Project.
+- Formosa (c) 2007-2008 Lukhnos D. Liu.
+- LFExtensions / LFPlatform (c) 2008 Lithoglyph Inc.
+- CareService (c) 2008 Lithoglyph Inc.
+- OVAFEval / Graphene (c) 2008 Lithoglyph Inc.
+- Yahoo!(R) Dictionary Parser (c) 2008 Lithoglyph Inc.
+- Manjusri (c) 2008 Lithoglyph Inc.
+- Minotaur (c) 2008 Lithoglyph Inc.
+- PlainVanilla (c) 2008 Lithoglyph Inc.
+- SQLite3（公有領域 / public domain）。
+- SQLite Encryption Extension (SEE)：本版改用開源後備方案
+  （sqlite3-cerod-see-aes128-ccm-combined.c）。
+- OpenSSL 3（Apache License 2.0）：授權文字見
+  Licenses/OpenSSL/LICENSE.txt。
+- jieba-tw（MIT License）：授權文字見 Licenses/jieba-tw/LICENSE。
+- expat、UnitTest++：見各原始檔頭宣告。
+
+資料來源：
+- SinicaCorpus、BPMFMappings、YahooSearchTerms、DataTables 字表（bpmf/cj/simplex）
+- canton.cin 出自社群專案 tenpo-io/YahooInput（MIT 風格的附加字表）。
+
+編譯：使用 macOS Command Line Tools + clang，OpenSSL 3 與 SQLite
+均採用開源版本；智慧注音（Smart Phonetic）未註冊。
