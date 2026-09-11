@@ -28,6 +28,11 @@
   已重新簽署（adhoc）。
 - 補齊 Info.plist 與 rosetta 版一致的鍵值（TICapsLockLanguageSwitchCapable、
   TISParticipatesInTouchBar、arm64 最小系統版本）。
+- **修正傳統注音選字框不出現的問題**：此 build 以 `OVIMTRADITIONALMANDARIN_USE_ABSOLUTE_ORDER_QUERY_STRING`
+  查詢（使用「絕對順序」2 字元編碼），但原本的 `bpmf.cin` 鍵是「按鍵序列」，
+  導致查詢幾乎都對不上、候選字為空、只會 beep。已用
+  `Frameworks/Formosa/Tools/ConvertBPMFCin` 把 `bpmf.cin` 的鍵轉成絕對順序編碼，
+  使查詢能正確命中候選字並顯示選字框。
 
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
