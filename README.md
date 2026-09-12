@@ -63,6 +63,19 @@
   ```
 - 若未安裝 gh CLI，腳本會印出 GitHub compare URL，供你在網頁開 PR。
 
+## 修正紀錄（2026-09-12 晚）
+- **修正「啟動即崩潰、選單列看不到輸入法選項」**：找到兩處崩潰並修正。
+  - `FetchSQLiteCERODKey` 回傳的 `:cerod:` 前置會讓標準 sqlite3 開啟失敗
+    （本 build 的 `KeyKey.db` 其實是未加密的一般 SQLite），導致 `OVSQLiteConnection::Open`
+    回傳 null、後續 `execute` 在 null 上 SIGSEGV。改為直接回傳檔名。
+  - `mergeOneKeyData` / `mergeCannedMessagesData` 對空字串解析出 null 後未防護，
+    造成 `dictionaryKeys` 崩潰；已加上 null 防護。
+- **補回全型標點（全形符號）**：arm64 版缺少標點表格，導致 `shift+,` 只輸出半型 `<`。
+  已加入 `DataTables/Punctuations/punctuation.cin`（表格名稱 `Punctuations-punctuation-cin`，
+  對應模組查詢 `Punctuations-punctuation*`），使 `shift+,` → `，`、`shift+.` → `。` 等恢復全形。
+- 已重新編譯 arm64 二進位、重新簽署（adhoc）、重建 pkg / dmg / zip。
+
+
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
 見 THIRD_PARTY_NOTICES.txt；App 內亦附於 Contents/Resources/Licenses/。
