@@ -55,6 +55,14 @@
   （`Distributions/Takao/Keyring/CERODCodec.c`）。
 
 
+## 協作與推送（Pull Request）
+- 本專案的變更一律透過 **feature branch + Pull Request** 送交 main。
+- 可用輔助腳本 `~/scripts/push-pr.sh`（自動建立分支、提交、推送、開 PR）：
+  ```
+  ~/scripts/push-pr.sh fix-xxx "修正說明"
+  ```
+- 若未安裝 gh CLI，腳本會印出 GitHub compare URL，供你在網頁開 PR。
+
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
 見 THIRD_PARTY_NOTICES.txt；App 內亦附於 Contents/Resources/Licenses/。
