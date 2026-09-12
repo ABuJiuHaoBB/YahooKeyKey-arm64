@@ -76,6 +76,14 @@
 - 已重新編譯 arm64 二進位、重新簽署（adhoc）、重建 pkg / dmg / zip。
 
 
+## 修正紀錄（2026-09-13）
+- **安裝器（PKG）調整**：
+  - 在 `Distribution` 加上 `<title>Yahoo! KeyKey</title>`，讓安裝視窗顯示軟體名稱（先前只顯示空字串）。
+  - 加入 `postinstall` 腳本：安裝完成後顯示提醒對話框，告知「請登出再登入」以啟用輸入法
+    （如需強制登出，可將腳本中 `tell application "System Events" to log out` 那行取消註解）。
+- 已重新簽署（adhoc）並重建 pkg。
+
+
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
 見 THIRD_PARTY_NOTICES.txt；App 內亦附於 Contents/Resources/Licenses/。
