@@ -34,6 +34,27 @@
   `Frameworks/Formosa/Tools/ConvertBPMFCin` 把 `bpmf.cin` 的鍵轉成絕對順序編碼，
   使查詢能正確命中候選字並顯示選字框。
 
+## 修正紀錄（2026-09-12）
+- **修正「輸入聲調後整組跳字」的問題**：先前「絕對順序」2 字元編碼會
+  把大小寫字母當作編碼的一部分；而 `.cin` 表格預設以「不區分大小寫」
+  方式載入（鍵會被小寫化），導致不同音節碰撞。例如：
+  `zp4`（ㄈㄣˋ）與 `wu06`（ㄊㄧㄢˊ）分別編碼成 `}i` 與 `}I`，
+  小寫化後都變成 `}i`，於是「輸入聲調後整組跳成另一組字」。
+  （另 `zp6`→`tj06`、`vul4`→`tjo6` 等 178 組大小寫碰撞）。
+
+  本次改為「不含大小寫」的 3 字元編碼（使用不含空白、且 `tolower`
+  恆等的 68 個可印 ASCII 字元，`68^3 > 6160`），並重新產生 `bpmf.cin`，
+  使小寫化後不再碰撞；同時在 `OVIMTraditionalMandarin::initialize`
+  中把 bpmf 表格改為區分大小寫載入（對 SQLite 版本無影響）。
+  已重新編譯 arm64 二進位、重新簽署（adhoc）並重建 pkg / dmg / zip。
+  另修正編譯期相容性：`PVPropertyListExpat.cpp`（`ofs`→`sst`）、
+  `StaticPack.h`（多餘限定）、各 `PackageMain.cpp`（改為 static 避免
+  重複符號）、`CVSendKey.m`（arm64 走 `kchrID = 0` 分支）、
+  若干控制器補上 delegate 協定、`string([obj method])` 的
+  「most vexing parse」改寫，並補上無操作的 CEROD codec 相容實作
+  （`Distributions/Takao/Keyring/CERODCodec.c`）。
+
+
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
 見 THIRD_PARTY_NOTICES.txt；App 內亦附於 Contents/Resources/Licenses/。
