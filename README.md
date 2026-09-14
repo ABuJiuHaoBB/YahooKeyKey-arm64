@@ -17,7 +17,11 @@
 - THIRD_PARTY_NOTICES.txt — 第三方元件署名（OpenVanilla、OpenSSL、jieba-tw…）
 
 ## 已知限制
-- 智慧注音（Smart Phonetic）未註冊（依賴 Yahoo 未公開的加密普通話語言模型）。
+- 智慧注音（Smart Phonetic）目前以「重建的最小語言模型」運作：
+  - unigrams（候選字）由已轉換的 `bpmf.cin` 重建；
+  - bigrams（上下文）由 `associated_phrases` 重建；
+  - 因此「好打注音」可正常選字、並能依上下文自動校正（非 Yahoo 原始語言模型，
+    準確度與完整度有限）。
 - 傳統注音、速成、倉頡、廣東拼音可用。
 - 輔助 App（Preferences / PhraseEditor）仍為 x86_64，會走 Rosetta，不影響主輸入法。
 
@@ -83,6 +87,26 @@
     （如需強制登出，可將腳本中 `tell application "System Events" to log out` 那行取消註解）。
 - 已重新簽署（adhoc）並重建 pkg。
 
+
+## 修正紀錄（2026-09-14）
+- **讓「好打注音（智慧注音 / SmartMandarin）」可以運作**：
+  - 根因：`OVIMSmartMandarin::initialize()` 要求 KeyKey.db 內存在
+    `bigrams` / `unigrams` 兩張表（Yahoo 的語言模型），但 arm64 版只有
+    `associated_phrases`，導致初始化失敗、打字只出英文、選字框反白。
+  - 做法：以「重建的最小語言模型」補上這兩張表（不需修改程式碼）：
+    - `unigrams`：從已轉換的 `DataTables/Mandarin/bpmf.cin`（絕對順序編碼）
+      重建候選字表，含 UNK(`*`) / BOS(`!`) / EOS(`$`) 特殊項目。
+    - `bigrams`：由 `associated_phrases` 抽出相鄰字對，並用「字→注音編碼」
+      反向對映產生上下文資料（機率高於 unigram，使能依上下文自動校正）。
+  - 產生工具：`gen_lm.py`（unigrams）、`gen_lm_bigram.py`（bigrams）。
+- **修正 Info.plist 最低系統版本不一致**：
+  - 二進位實際 `LC_BUILD_VERSION` 的 minos 為 15.0（以 macOS 15.5 SDK 編譯），
+    但 Info.plist 中 `LSMinimumSystemVersionByArchitecture` 的 arm64 寫成 10.6.0，
+    會誤以為可在 macOS 10.6 執行。
+  - 已把 arm64（及通用 `LSMinimumSystemVersion`）改為 15.0。
+- **修正打包 zip 內容爆量**：macOS 的 `zip` 對含「!」的檔名（`Yahoo! KeyKey.app`）
+  會誤當成 glob，造成壓縮內容爆量；改以 `ditto -c -k` 正確處理。
+- 已重建 pkg / dmg / zip（含以上修正），並重新簽署（adhoc）。
 
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
