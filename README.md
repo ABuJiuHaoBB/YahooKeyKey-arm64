@@ -17,11 +17,11 @@
 - THIRD_PARTY_NOTICES.txt — 第三方元件署名（OpenVanilla、OpenSSL、jieba-tw…）
 
 ## 已知限制
-- 智慧注音（Smart Phonetic）目前以「重建的最小語言模型」運作：
-  - unigrams（候選字）由已轉換的 `bpmf.cin` 重建；
-  - bigrams（上下文）由 `associated_phrases` 重建；
-  - 因此「好打注音」可正常選字、並能依上下文自動校正（非 Yahoo 原始語言模型，
-    準確度與完整度有限）。
+- 智慧注音（Smart Phonetic）目前以「重建語言模型」運作：
+  - unigrams / bigrams 由開源、持續維護的 **小麥注音（McBopomofo）詞庫** 重建，
+    （含片語頻率，頻率加權，可依上下文自動校正）。
+  - 原始 Yahoo KeyKey.db 為 CEROD/SEE 加密（商用 codec 不在倉庫），
+    因此不直接掛載；改用 McBopomofo 詞庫為替代來源（詞彙更新、頻率更準確）。
 - 傳統注音、速成、倉頡、廣東拼音可用。
 - 輔助 App（Preferences / PhraseEditor）仍為 x86_64，會走 Rosetta，不影響主輸入法。
 
@@ -107,6 +107,18 @@
 - **修正打包 zip 內容爆量**：macOS 的 `zip` 對含「!」的檔名（`Yahoo! KeyKey.app`）
   會誤當成 glob，造成壓縮內容爆量；改以 `ditto -c -k` 正確處理。
 - 已重建 pkg / dmg / zip（含以上修正），並重新簽署（adhoc）。
+
+## 修正紀錄（2026-09-15）
+- **改用「小麥注音（McBopomofo）」詞庫重建語言模型，大幅提升選字精準度**：
+  - 先前以 `bpmf.cin`（等機率）+ `associated_phrases`（片語）重建，
+    選字只依表格順序、無頻率加權，導致「字不會自動校正」。
+  - 改用 McBopomofo 的開源詞庫（`BPMFBase.txt` 單字映射、`BPMFMappings.txt`
+    片語映射、`phrase.occ` 片語頻率），重建「頻率加權」的 unigrams / bigrams：
+    - unigrams（26538 筆）：單字→絕對順序編碼，機率 = log(頻率+1)。
+    - bigrams（137501 筆）：片語相鄰字對，機率 = log(頻率+1) + 2.0（讓上下文優先）。
+  - 已驗證：輸入 `ㄊㄞˊ ㄨㄢ` 正確組出「台灣」，且 台(10.89)/灣(10.13) 頻率最高。
+  - 產生工具：`gen_lm_mcbo.cpp`（含 Formosa::Mandarin 的注音→絕對順序轉換）。
+- 已重建 pkg / dmg / zip，並重新簽署（adhoc）。
 
 ## 授權
 本專案採 BSD 3-clause（見 LICENSE）。第三方元件之授權與署名
