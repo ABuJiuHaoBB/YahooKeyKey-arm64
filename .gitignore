@@ -1,0 +1,6 @@
+# 建置工作目錄與暫存（不在 repo 中管理）
+pkgtmp/
+
+# 本機暫存
+build.log
+.DS_Store

@@ -2,6 +2,11 @@
 
 本檔記錄每次重建的修正內容。日期為重建日期；後續建議改用語意化版本號（如 v1.0.0）。
 
+## 2026-09-18
+- **修正「傳統注音選字框不出現」**：arm64 版 `DataTables/Mandarin/bpmf.cin` 已改為「絕對順序」3 字元鍵（如 `dq!` = 試），但手動 build 腳本（`scripts/build-ykk.sh`）未定義 `OVIMTRADITIONALMANDARIN_USE_ABSOLUTE_ORDER_QUERY_STRING`，導致傳統注音改用 `standardLayoutQueryString()`（如 `g4`）查詢，對不上絕對順序鍵 → 候選為空 → 只 beep、選字框不出現。已在 `DEF_FLAGS` 補上該巨集（與原始 Xcode build 一致），使查詢改用 `absoluteOrderQueryString()`。
+- **修正「選單好打注音/傳統注音反白」**：選單（`CVApplicationController.mm`）硬編碼的 identifier 為 `SmartMandarin`/`TraditionalMandarin`，但 arm64 build 未覆寫模組 identifier（原始 Xcode build 有 `-DOVIMSMARTMANDARIN_IDENTIFIER="SmartMandarin"` 等），模組實際 identifier 為 `OVIMSmartMandarin`/`OVIMTraditionalMandarin`，導致 `isFailedModule("SmartMandarin")` 找不到模組而反白；真正的模組反而以英文名 `Smart Mandarin`/`Traditional Mandarin (Bopomofo)` 另外出現且可選。已在 `DEF_FLAGS` 補上對應巨集，使「好打注音」對應 `SmartMandarin` 模組、「傳統注音」對應 `TraditionalMandarin` 模組，並與 `setPrimaryInputMethod("SmartMandarin")`、`com.yahoo.KeyKey.SmartMandarin.plist` 等對齊。
+- 已重新編譯 arm64 二進位、重新簽署（adhoc）並重建 pkg / dmg / zip。
+
 ## 2026-09-13
 - **安裝器（PKG）調整**：
   - 在 `Distribution` 加上 `<title>Yahoo! KeyKey</title>`，讓安裝視窗顯示軟體名稱（先前只顯示空字串）。
