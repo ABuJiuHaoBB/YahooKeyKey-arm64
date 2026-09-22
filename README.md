@@ -1,7 +1,10 @@
-# Yahoo! KeyKey（Apple Silicon 原生版）
+# Yahoo! KeyKey（Apple Silicon / arm64 原生版）
 
-從 Yahoo! 開源的 KeyKey / OpenVanilla 原始碼重新編譯，可在 Apple Silicon（arm64）上原生執行，
-不再依賴 Rosetta。支援 macOS 15.0（Sequoia）以上。
+本專案將 Yahoo! 開源的「Yahoo! KeyKey」輸入法由 **Intel 版轉譯為 Apple Silicon（arm64）原生版**，
+在 Apple Silicon 上原生執行，不再依賴 Rosetta。支援 macOS 15.0（Sequoia）以上。
+
+> **穩定版聲明**：本版（**v0.1.0**，2026-09-22）為轉譯完成後、本機測試通過的**第一個穩定版**。
+> 歡迎大家安裝使用；若遇到任何問題，請回報到本專案的 **GitHub Issues**。
 
 ## 安裝
 
@@ -13,19 +16,20 @@
 > **首次開啟提示**：本版為 adhoc 簽署（未公證）。若 macOS 跳出「unidentified developer」，
 > 在 Finder 對 App 按右鍵 →「打開」，或先執行 `xattr -cr "Yahoo! KeyKey.app"`。
 
-## 本版修正（2026-09-18）
+## 本版（v0.1.0，2026-09-22）
 
-- 修正「傳統注音」輸入後選字框不出現：補上絕對順序查詢（`OVIMTRADITIONALMANDARIN_USE_ABSOLUTE_ORDER_QUERY_STRING`）。
-- 修正「好打注音 / 傳統注音」在選單中反白不能選：模組識別碼改回 `SmartMandarin` / `TraditionalMandarin`，
-  與選單一致（`-DOVIMSMARTMANDARIN_IDENTIFIER="SmartMandarin"` 等）。
+- 已轉譯為 **arm64 原生**：主程式、Preferences.app、PhraseEditor.app 均為 arm64（不再依賴 Rosetta）。
+- 修正「偏好設定打不開」：補上 Preferences.app / PhraseEditor.app 的 MainMenu.nib（ibtool 改用完整 Xcode）。
+- 移除 DownloadUpdate.app、InstallerHelp.app（已從選單移除、無程式碼啟動）。
+- 新增「安裝後提醒」：pkg 安裝完成後跳出提醒，告知需重新啟動（或登出再登入）輸入法才會生效。
+- 修正「傳統注音」選字框不出現、選單反白不能選（2026-09-18）。
 
 ## 已知限制
 
 - 智慧注音（好打注音）的語言模型由開源「小麥注音（McBopomofo）」詞庫重建
   （原始 KeyKey.db 為 CEROD/SEE 加密，商用 codec 不在倉庫）。
 - 傳統注音、倉頡、簡易/速成、Canton 可用。
-- 輔助 App（Preferences / PhraseEditor）仍為 x86_64，走 Rosetta；未安裝可執行
-  `softwareupdate --install-rosetta`。
+- 本版為 adhoc 簽署（未公證），macOS 可能提示「unidentified developer」（見上）。
 
 ## 授權
 
